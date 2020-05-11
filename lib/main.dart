@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tripify/data/trip_repository.dart';
 import 'package:tripify/screens/feed_screen/feed_screen.dart';
+
+import 'bloc/trip_bloc.dart';
 
 void main() {
   runApp(Tripify());
@@ -16,7 +20,10 @@ class Tripify extends StatelessWidget {
         primaryColor: const Color.fromRGBO(22, 217, 149, 1),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: FeedScreen(),
+      home: BlocProvider(
+        create: (context) => TripBloc(FakeTripRepository()),
+        child: FeedScreen(),
+      ),
     );
   }
 }
