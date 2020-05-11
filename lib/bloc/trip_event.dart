@@ -14,6 +14,11 @@ class GetTrips extends TripEvent {
 }
 
 class ToggleLikeTrip extends TripEvent {
+  final Trip trip;
+  final bool value;
+
+  ToggleLikeTrip(this.trip, this.value);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [trip, value];
 }

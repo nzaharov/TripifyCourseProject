@@ -10,7 +10,8 @@ part 'trip_state.dart';
 
 class TripBloc extends Bloc<TripEvent, TripState> {
   final TripRepository _tripRepository;
-  final List<Trip> trips = [];
+  final tripCap = 30;
+  List<Trip> trips = [];
 
   TripBloc(this._tripRepository);
 
@@ -26,16 +27,32 @@ class TripBloc extends Bloc<TripEvent, TripState> {
     }
     if (event is GetTrips) {
       try {
-        if (trips.length < 30) {
+        if (trips.length < tripCap) {
           final newTrips = await _tripRepository.getTrips(event.count);
-          trips.addAll(newTrips);
-          yield TripLoaded(List<Trip>.from(trips), false);
+          trips = trips + newTrips;
+          yield TripLoaded(trips, false);
         } else {
           yield TripLoaded(List<Trip>.from(trips), true);
         }
       } on Error {
         // TODO
       }
+    } else if (event is ToggleLikeTrip) {
+      trips = List<Trip>.from(trips.map((trip) {
+        {
+          if (trip.id == event.trip.id) {
+            return Trip(
+              id: trip.id,
+              title: trip.title,
+              subtitle: trip.subtitle,
+              likes: event.value ? event.trip.likes + 1 : event.trip.likes - 1,
+              isLiked: event.value,
+            );
+          }
+          return trip;
+        }
+      }));
+      yield TripLoaded(trips, trips.length >= tripCap);
     }
   }
 }

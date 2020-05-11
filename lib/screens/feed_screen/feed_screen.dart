@@ -9,6 +9,7 @@ class FeedScreen extends StatelessWidget {
     final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       drawer: Drawer(
         child: null,
       ),

@@ -96,9 +96,17 @@ class _FeedState extends State<Feed> {
           IconSlideAction(
             closeOnTap: false,
             caption: trip.likes.toString(),
+            iconWidget: trip.isLiked
+                ? Icon(
+                    Icons.favorite,
+                    color: Colors.pink,
+                  )
+                : Icon(Icons.favorite_border),
             color: Colors.white,
-            icon: Icons.favorite_border,
-            onTap: () => null, // TODO
+            onTap: () {
+              BlocProvider.of<TripBloc>(context)
+                  .add(ToggleLikeTrip(trip, !trip.isLiked));
+            }, // TODO
           ),
         ],
         secondaryActions: <Widget>[

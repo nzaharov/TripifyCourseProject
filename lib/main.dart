@@ -15,6 +15,7 @@ class Tripify extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Tripify',
+      color: Colors.white,
       theme: ThemeData(
         accentColor: const Color.fromRGBO(16, 108, 200, 1),
         primaryColor: const Color.fromRGBO(22, 217, 149, 1),
