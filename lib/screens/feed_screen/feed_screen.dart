@@ -15,16 +15,13 @@ class FeedScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              'My Feed',
-              style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 24,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400),
-            ),
+          child: Text(
+            'My Feed',
+            style: TextStyle(
+                color: primaryColor,
+                fontSize: 24,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400),
           ),
         ),
         elevation: 0.0,

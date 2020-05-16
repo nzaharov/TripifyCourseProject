@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:tripify/bloc/trip_bloc.dart';
 import 'package:tripify/data/models/trip.dart';
+import 'package:tripify/screens/trip_details/bloc/trip_details_bloc.dart';
+import 'package:tripify/screens/trip_details/trip_details.dart';
+
+import 'bloc/trip_bloc.dart';
 
 class Feed extends StatefulWidget {
   const Feed({Key key}) : super(key: key);
@@ -36,7 +39,7 @@ class _FeedState extends State<Feed> {
 
   Widget _buildFeed(BuildContext context, TripLoaded state) {
     return ListView.builder(
-        padding: const EdgeInsets.only(left: 1.0, right: 1.0, top: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 1.0),
         itemCount: state.trips.length + 1,
         itemBuilder: (context, index) {
           if (index < state.trips.length) {
@@ -58,11 +61,18 @@ class _FeedState extends State<Feed> {
   Widget _buildRow(BuildContext context, Trip trip) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
-      child: Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 1),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => TripDetailsBloc(),
+              child: TripDetails(),
+            ),
+          ));
+        },
+        child: Slidable(
+          actionPane: SlidableDrawerActionPane(),
+          actionExtentRatio: 0.25,
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
@@ -72,7 +82,7 @@ class _FeedState extends State<Feed> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 170,
+                  height: 180,
                   width: MediaQuery.of(context).size.width,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -80,43 +90,51 @@ class _FeedState extends State<Feed> {
                         fit: BoxFit.cover),
                   ),
                 ),
-                Text(
-                  trip.title,
-                  style: TextStyle(fontSize: 25),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        trip.title,
+                        style: TextStyle(fontSize: 24, color: Colors.white),
+                      ),
+                      Text(
+                        trip.subtitle,
+                        style: TextStyle(fontSize: 17, color: Colors.white70),
+                      )
+                    ],
+                  ),
                 ),
-                Text(
-                  trip.subtitle,
-                  style: TextStyle(fontSize: 18),
-                )
               ],
             ),
           ),
+          actions: <Widget>[
+            IconSlideAction(
+              closeOnTap: false,
+              caption: trip.likes.toString(),
+              iconWidget: trip.isLiked
+                  ? Icon(
+                      Icons.favorite,
+                      color: Colors.pink,
+                    )
+                  : Icon(Icons.favorite_border),
+              color: Colors.white,
+              onTap: () {
+                BlocProvider.of<TripBloc>(context)
+                    .add(ToggleLikeTrip(trip, !trip.isLiked));
+              },
+            ),
+          ],
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              caption: 'Remove',
+              color: Colors.white,
+              icon: Icons.remove_circle_outline,
+              onTap: () => null, // TODO
+            ),
+          ],
         ),
-        actions: <Widget>[
-          IconSlideAction(
-            closeOnTap: false,
-            caption: trip.likes.toString(),
-            iconWidget: trip.isLiked
-                ? Icon(
-                    Icons.favorite,
-                    color: Colors.pink,
-                  )
-                : Icon(Icons.favorite_border),
-            color: Colors.white,
-            onTap: () {
-              BlocProvider.of<TripBloc>(context)
-                  .add(ToggleLikeTrip(trip, !trip.isLiked));
-            }, // TODO
-          ),
-        ],
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            caption: 'Remove',
-            color: Colors.white,
-            icon: Icons.remove_circle_outline,
-            onTap: () => null, // TODO
-          ),
-        ],
       ),
     );
   }
